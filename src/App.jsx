@@ -4,6 +4,12 @@ import {AiFillPlusCircle} from "react-icons/ai"
 import {useState,useEffect} from "react";
 import { collection,getDocs } from "firebase/firestore";
 import { db } from './config/firebase';
+import {HiOutlineUserCircle} from "react-icons/hi";
+import {IoMdTrash} from "react-icons/io";
+import {RiEditCircleLine} from "react-icons/ri";
+
+
+import "firebase/firestore";
 
 const App = () => {
   const [contacts,setContacts]=useState([]);
@@ -14,7 +20,15 @@ const App = () => {
       try{
         const contactsRef=collection(db,"contacts");
         const contactSnapshot=await getDocs(contactsRef);
-        console.log(contactSnapshot);
+        const contactList=contactSnapshot.docs.map((doc)=>{
+          return{
+            id:doc.id,
+            ...doc.data()
+
+        }
+          
+        });
+      setContacts(contactList);
       }
       catch(err){
         console.log(err);
@@ -35,6 +49,27 @@ const App = () => {
         <AiFillPlusCircle className="text-5xl text-white cursor-pointer"/>
       
      
+      </div>
+      <div className="mt-2" >
+       { contacts.map((contact) => (
+          <div className="flex bg-[#FFEAAE] justify-between items-center rounded-lg p-2 " key={contact.id}>
+<div className="flex gap-1 justify-center">
+<HiOutlineUserCircle className="text-orange text-5xl"/>
+            <div className=" ">
+              <h2 className="font-medium">{contact.name}</h2>
+              <p className="text-sm">{contact.email}</p>
+            </div>
+</div>
+           
+            <div className="flex gap-2">
+              <RiEditCircleLine className="text-4xl "/>
+              <IoMdTrash className="text-4xl text-purple-500"/>
+            
+
+            </div>
+             
+          </div>
+        ))}
       </div>
       
     </div>
